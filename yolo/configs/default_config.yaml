@@ -1,0 +1,78 @@
+# YOLO-ELK Default Configuration
+# This file contains default settings for the YOLO-ELK tracking system
+
+# Detection Configuration
+detection:
+  model_path: "yolov8n.pt"  # Path to YOLO model weights
+  device: "auto"  # Device to use: 'auto', 'cpu', 'cuda'
+  confidence_threshold: 0.5  # Minimum confidence for detections
+  iou_threshold: 0.7  # IoU threshold for NMS
+  target_classes: null  # List of class IDs to detect (null for all)
+  
+  # Class filtering
+  class_names:
+    - "person"
+    - "car"
+    - "truck"
+    - "bus"
+    - "motorcycle"
+    - "bicycle"
+
+# Tracking Configuration
+tracking:
+  # Norfair tracker settings
+  norfair:
+    distance_function: "euclidean"  # 'euclidean', 'iou', 'centroid'
+    distance_threshold: 30  # Maximum distance for association
+    hit_counter_max: 15  # Maximum frames to keep track without detection
+    initialization_delay: 3  # Frames to wait before confirming track
+    pointwise_hit_counter_max: 4  # Max frames for point-wise tracking
+    detection_threshold: 0.1  # Minimum detection confidence for tracking
+    past_detections_length: 4  # Number of past detections to store
+    reid_distance_threshold: 0.3  # Re-identification distance threshold
+
+# Video Processing Configuration
+video:
+  input_source: "0"  # Video file path or webcam index
+  output_path: null  # Output video path (null for no output)
+  fps: 30  # Output video FPS
+  resize_width: null  # Resize frame width (null for original)
+  resize_height: null  # Resize frame height (null for original)
+  
+# Visualization Configuration
+visualization:
+  show_detections: true  # Show detection bounding boxes
+  show_tracks: true  # Show tracking results
+  show_track_ids: true  # Show track IDs
+  show_class_labels: true  # Show class labels
+  show_confidence: true  # Show confidence scores
+  show_trails: false  # Show tracking trails
+  show_fps: true  # Show FPS counter
+  show_info: true  # Show frame info
+  
+  # Colors (BGR format)
+  detection_color: [0, 255, 0]  # Green for detections
+  track_color: [0, 0, 255]  # Red for tracks
+  text_color: [255, 255, 255]  # White for text
+  trail_color: [255, 0, 0]  # Blue for trails
+
+# Logging Configuration
+logging:
+  level: "INFO"  # Logging level: DEBUG, INFO, WARNING, ERROR
+  log_file: "logs/yolo_elk.log"  # Log file path
+  log_detections: false  # Log detection results
+  log_tracks: false  # Log tracking results
+  
+# Performance Configuration
+performance:
+  batch_size: 1  # Batch size for detection
+  num_workers: 4  # Number of worker threads
+  prefetch_frames: 2  # Number of frames to prefetch
+  
+# Export Configuration
+export:
+  save_results: false  # Save tracking results to file
+  results_format: "json"  # Results format: 'json', 'csv', 'txt'
+  results_path: "results/tracking_results"  # Results file path
+  save_frames: false  # Save processed frames
+  frames_path: "results/frames"  # Frames directory path

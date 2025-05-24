@@ -1,0 +1,69 @@
+name: yolo-tracking
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  # Python version
+  - python=3.10
+  
+  # Deep Learning Framework
+  - pytorch>=2.0.0
+  - torchvision>=0.15.0
+  - torchaudio>=2.0.0
+  - pytorch-cuda=12.1  # Adjust based on your CUDA version
+  
+  # Computer Vision Libraries
+  - opencv
+  - pillow
+  
+  # Scientific Computing
+  - numpy
+  - scipy
+  - pandas
+  - matplotlib
+  - seaborn
+  
+  # Video Processing
+  - ffmpeg
+  
+  # Development Tools
+  - jupyter
+  - ipykernel
+  - tqdm
+  
+  # Package Management
+  - pip
+  
+  # Pip dependencies (installed after conda dependencies)
+  - pip:
+    # YOLO Implementation (Ultralytics)
+    - ultralytics>=8.1.0  # Latest YOLO versions (YOLOv8, YOLOv9, etc.)
+    
+    # Object Tracking Libraries
+    - norfair>=2.2.0  # Simple real-time tracking
+    - supervision>=0.17.0  # Computer vision tools for detection and tracking
+    - lap>=0.4.0  # Linear Assignment Problem solver for tracking
+    
+    # Additional CV Tools
+    - albumentations>=1.3.0  # Image augmentation
+    - tensorboard>=2.11.0  # Training visualization
+    - roboflow  # Dataset management
+    
+    # Video Analysis
+    - vidgear>=0.3.0  # Video processing toolkit
+    - imageio>=2.31.0  # Image/video I/O
+    - imageio-ffmpeg>=0.4.8
+    
+    # Tracking Algorithms
+    - filterpy>=1.4.5  # Kalman filtering
+    - scikit-image>=0.21.0  # Image processing
+    - motmetrics>=1.4.0  # Multiple object tracking metrics
+    
+    # Additional Dependencies
+    - PyYAML>=6.0
+    - requests>=2.31.0
+    - psutil>=5.9.0
+    - py-cpuinfo>=9.0.0
+    - thop>=0.1.1  # FLOPs counter

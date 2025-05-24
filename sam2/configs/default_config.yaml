@@ -1,0 +1,155 @@
+# SAM2-ELK Default Configuration
+# This file contains default settings for the SAM2-ELK segmentation system
+
+# Segmentation Configuration
+segmentation:
+  model_checkpoint: "models/sam2_hiera_large.pt"  # SAM2 model checkpoint
+  model_config: "models/sam2_hiera_l.yaml"  # SAM2 model configuration
+  device: "auto"  # Device to use: 'auto', 'cpu', 'cuda'
+  confidence_threshold: 0.5  # Minimum confidence for segmentations
+  mask_threshold: 0.0  # Threshold for mask binarization
+  
+  # Prompting strategy
+  prompting:
+    use_points: true  # Use point prompts
+    use_boxes: true   # Use box prompts
+    use_text: false   # Use text prompts (if available)
+    auto_prompts: true  # Generate automatic prompts
+    
+  # Elk-specific settings
+  elk_detection:
+    min_mask_area: 500  # Minimum mask area for elk
+    max_mask_area: 50000  # Maximum mask area for elk
+    aspect_ratio_range: [0.8, 3.0]  # Valid aspect ratio range
+    
+  # Size classification thresholds (based on mask area)
+  size_thresholds:
+    calf: 2000      # Small elk (calves)
+    cow: 8000       # Medium elk (cows)
+    bull: 999999    # Large elk (bulls)
+
+# Video Processing Configuration
+video:
+  input_source: "data/raw/grassland.mp4"  # Default video file
+  output_path: null  # Output video path (null for no output)
+  fps: 30  # Output video FPS
+  resize_width: null  # Resize frame width (null for original)
+  resize_height: null  # Resize frame height (null for original)
+  
+  # SAM2 video-specific settings
+  memory_bank_size: 7  # Number of frames to keep in memory
+  chunk_size: 1  # Process frames in chunks
+  
+# Tracking Configuration
+tracking:
+  # Enable video object segmentation tracking
+  enable_tracking: true
+  track_memory: 10  # Frames to remember for tracking
+  
+  # Norfair tracker settings (adapted for masks)
+  norfair:
+    distance_function: "iou"  # 'euclidean', 'iou', 'centroid'
+    distance_threshold: 0.3  # Maximum distance for association
+    hit_counter_max: 15  # Maximum frames to keep track without detection
+    initialization_delay: 3  # Frames to wait before confirming track
+    pointwise_hit_counter_max: 4  # Max frames for point-wise tracking
+    detection_threshold: 0.1  # Minimum detection confidence for tracking
+    past_detections_length: 4  # Number of past detections to store
+    reid_distance_threshold: 0.3  # Re-identification distance threshold
+
+# Motion Compensation Configuration
+motion_compensation:
+  enable: true  # Enable motion compensation for helicopter footage
+  method: "optical_flow"  # 'optical_flow', 'feature_matching'
+  motion_threshold: 30  # Pixels of motion to trigger compensation
+  stabilization_strength: 0.8  # Strength of stabilization (0-1)
+
+# Feature Analysis Configuration
+feature_analysis:
+  enable: true  # Enable elk-specific feature analysis
+  analyze_shape: true  # Analyze elk body shape
+  analyze_color: true  # Analyze elk coloration
+  analyze_texture: true  # Analyze fur texture
+  
+  # Color analysis settings
+  color_analysis:
+    elk_color_ranges:
+      brown_lower: [10, 50, 20]   # HSV lower bound for brown
+      brown_upper: [20, 255, 200] # HSV upper bound for brown
+      tan_lower: [15, 30, 100]    # HSV lower bound for tan
+      tan_upper: [35, 150, 255]   # HSV upper bound for tan
+    white_rump_threshold: 0.15  # Threshold for white rump detection
+
+# Visualization Configuration
+visualization:
+  show_masks: true  # Show segmentation masks
+  show_tracks: true  # Show tracking results
+  show_track_ids: true  # Show track IDs
+  show_class_labels: true  # Show elk type labels
+  show_confidence: true  # Show confidence scores
+  show_trails: false  # Show tracking trails
+  show_fps: true  # Show FPS counter
+  show_info: true  # Show frame info
+  mask_alpha: 0.6  # Transparency of mask overlay
+  
+  # Colors (BGR format)
+  mask_colors:
+    bull: [0, 255, 0]      # Green for bulls
+    cow: [0, 255, 255]     # Yellow for cows
+    calf: [255, 165, 0]    # Orange for calves
+    unknown: [0, 165, 255] # Red for unknown
+  track_color: [255, 0, 0]  # Blue for tracks
+  text_color: [255, 255, 255]  # White for text
+  trail_color: [255, 0, 0]  # Blue for trails
+
+# Logging Configuration
+logging:
+  level: "INFO"  # Logging level: DEBUG, INFO, WARNING, ERROR
+  log_file: "logs/sam2_elk.log"  # Log file path
+  log_segmentations: false  # Log segmentation results
+  log_tracks: false  # Log tracking results
+  
+# Performance Configuration
+performance:
+  batch_size: 1  # Batch size for segmentation
+  num_workers: 4  # Number of worker threads
+  prefetch_frames: 2  # Number of frames to prefetch
+  memory_efficient: true  # Use memory-efficient processing
+  
+# Export Configuration
+export:
+  save_results: false  # Save segmentation results to file
+  results_format: "json"  # Results format: 'json', 'csv', 'txt'
+  results_path: "results/segmentation_results"  # Results file path
+  save_frames: false  # Save processed frames
+  frames_path: "results/frames"  # Frames directory path
+  save_masks: false  # Save individual masks
+  masks_path: "results/masks"  # Masks directory path
+  
+  # Video export settings
+  export_video: false  # Export annotated video
+  video_codec: "mp4v"  # Video codec
+  video_quality: 95  # Video quality (0-100)
+
+# Dataset Configuration
+datasets:
+  grassland:
+    video_path: "data/raw/grassland.mp4"
+    description: "Grassland elk footage from helicopter"
+    expected_elk_types: ["bull", "cow", "calf"]
+    terrain_type: "grassland"
+    lighting_conditions: "daylight"
+    
+  burn:
+    video_path: "data/raw/burn.mp4"
+    description: "Post-fire landscape elk footage"
+    expected_elk_types: ["bull", "cow", "calf"]
+    terrain_type: "burned_forest"
+    lighting_conditions: "variable"
+
+# Experimental Features
+experimental:
+  use_sam2_video: true  # Use SAM2's video segmentation capabilities
+  interactive_prompting: false  # Enable interactive prompting
+  multi_scale_analysis: false  # Analyze at multiple scales
+  temporal_consistency: true  # Enforce temporal consistency
